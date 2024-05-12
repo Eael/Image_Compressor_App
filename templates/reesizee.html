@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resize Image</title>
+</head>
+<body>
+    <h1>Resize Image: {{ filename }}</h1>
+    <form method="post">
+        <label for="size">Size (width,height):</label>
+        <input type="text" name="size" value="100,100" required>
+        <br>
+        <label for="rotate">Rotate (degrees):</label>
+        <input type="number" name="rotate" value="0" required>
+        <br>
+        <label for="output_folder">Output Folder:</label>
+        <input type="text" name="output_folder" value="resized">
+        <br>
+        <input type="submit" value="Resize and Download">
+    </form>
+</body>
+</html>

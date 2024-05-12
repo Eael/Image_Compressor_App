@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Upload and Resize</title>
+</head>
+<body>
+    <h1>Upload and Resize Your Image</h1>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <label for="file">Select image to upload:</label>
+        <input type="file" id="file" name="file" accept="image/*">
+        <br>
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>
