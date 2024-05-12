@@ -1,1 +1,0 @@
-# Image_Compressor_App
