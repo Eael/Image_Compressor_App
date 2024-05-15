@@ -4,7 +4,7 @@ This is an image resizing app
 Must include link to your deployed site, final project blog article, author(s) LinkedIn
 
 ## Installation
-`python app.py`
+`python3 appv2.py`
 
 Usage
 Select Browse
