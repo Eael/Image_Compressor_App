@@ -29,15 +29,19 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}  # Allowed image formats
 
 def allowed_file(filename):
     """
-    Check if the uploaded file is an allowed image format.
+    Check if the provided file or directory is valid.
 
     Args:
-        filename (str): The name of the uploaded file.
+        filename (str): The name of the file or directory.
 
     Returns:
-        bool: True if the file extension is allowed, False otherwise.
+        bool: True if the file extension is allowed or if it's a directory, False otherwise.
     """
+    if os.path.isdir(filename):
+        return True
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 
 def resize_image(image, size, rotate_degrees):
     """
@@ -129,6 +133,43 @@ def handle_resize(filename):
             return jsonify({'error': 'File not found'}), 404
 
     return render_template('resize.html', filename=filename)
+
+
+@app.route('/batch_resize', methods=['POST'])
+def batch_resize():
+    """
+    Handle batch resizing and rotation of images from a directory.
+
+    If the request method is POST, it resizes and rotates all images in the specified directory
+    based on the provided parameters and saves the resized images to the specified output folder.
+
+    Returns:
+        A JSON response with a success message if the batch processing is successful.
+        A JSON response with an error message if an error occurs during processing.
+    """
+    input_dir = request.form.get('input_dir')
+    size = tuple(int(x) for x in request.form.get('size', '100,100').split(','))
+    rotate_degrees = int(request.form.get('rotate', 0))
+    output_folder = request.form.get('output_folder')
+
+    if not os.path.isdir(input_dir):
+        return jsonify({'error': 'Invalid input directory'}), 400
+
+    try:
+        for filename in os.listdir(input_dir):
+            if allowed_file(filename):
+                input_path = os.path.join(input_dir, filename)
+                with Image.open(input_path) as image:
+                    resized_image = resize_image(image, size, rotate_degrees)
+                    resized_path = os.path.join(output_folder, filename)
+                    os.makedirs(os.path.dirname(resized_path), exist_ok=True)
+                    resized_image.save(resized_path)
+
+        return jsonify({'message': 'Batch processing completed successfully'}), 200
+    except IOError:
+        return jsonify({'error': 'Error opening or processing the images'}), 500
+
+
 
 @app.route('/list_images', methods=['GET'])
 def list_images():

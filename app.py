@@ -62,13 +62,16 @@ def handle_resize(filename):
                     resized_path = os.path.join(output_folder, filename)
                     os.makedirs(os.path.dirname(resized_path), exist_ok=True)
                     resized_image.save(resized_path)
-                return send_from_directory(os.path.dirname(resized_path), os.path.basename(resized_path), as_attachment=True)
+                    path_name = os.path.dirname(resized_path)
+                    base_name = os.path.basename(resized_path)
+                return send_from_directory(path_name, base_name, as_attachment=True)
             except IOError:
                 return jsonify({'error': 'Error opening or processing the image'}), 500
         else:
             return jsonify({'error': 'File not found'}), 404
 
     return render_template('resize.html', filename=filename)
+
 
 @app.route('/list_images', methods=['GET'])
 def list_images():
